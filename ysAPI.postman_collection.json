@@ -1,0 +1,348 @@
+{
+	"info": {
+		"_postman_id": "832e799e-31b9-44af-87a6-615dac8b6467",
+		"name": "影视API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "今日放映影片",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var abc = pm.response.json();\r",
+							"// 采用的原理是：把需要的数据提取出来赋值给一个变量，然后把这个变量变成全部变量或局部\r",
+							"// 设置局部变量  即  movie = abc[\"result\"][3][\"movieId\"]\r",
+							"pm.environment.set(\"movie\",abc[\"result\"][3][\"movieId\"]);\r",
+							"// 设置全局变量\r",
+							"pm.globals.set(\"movie_1\",abc[\"result\"][3][\"movieId\"]);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"success\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host_1}}/movie/movies.today?cityid=8&key={{key_2}}",
+					"host": [
+						"{{host_1}}"
+					],
+					"path": [
+						"movie",
+						"movies.today"
+					],
+					"query": [
+						{
+							"key": "cityid",
+							"value": "8"
+						},
+						{
+							"key": "key",
+							"value": "{{key_2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "查询影片信息",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"金刚川\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://v.juhe.cn/movie/query?movieid={{youxiao}}&key={{key_2}}",
+					"protocol": "http",
+					"host": [
+						"v",
+						"juhe",
+						"cn"
+					],
+					"path": [
+						"movie",
+						"query"
+					],
+					"query": [
+						{
+							"key": "movieid",
+							"value": "{{youxiao}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key_2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "查询影片信息 Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Your test name\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.reason).to.not.eql('成功的返回');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://v.juhe.cn/movie/query?movieid={{wuxiao}}&key={{key_2}}",
+					"protocol": "http",
+					"host": [
+						"v",
+						"juhe",
+						"cn"
+					],
+					"path": [
+						"movie",
+						"query"
+					],
+					"query": [
+						{
+							"key": "movieid",
+							"value": "{{wuxiao}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key_2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "按关键字检索影片信息",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" \r",
+							"// 判断响应的状态码是否与预期结果一致\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 判断响应数据中是否包含预期的数据\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"成功的返回\");\r",
+							"});\r",
+							"\r",
+							"// （只能响应结果的数据类型是json的）\r",
+							"// 判断json字符串某个键的值是否等于预期结果\r",
+							"pm.test(\"Your test name\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData['result'][0]['title']).to.eql('前任沙滩见');\r",
+							"    pm.expect(jsonData['result'][0]['country']).to.eql(\"美国\");\r",
+							"});\r",
+							"// // （响应结果只能是字符串时使用）\r",
+							"\r",
+							"// pm.test(\"Body is correct\", function () {\r",
+							"//     pm.response.to.have.body(\"response_body_string\");\r",
+							"// });\r",
+							"\r",
+							"// 判断响应头部域是否包含预期的头部字段\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"//判断响应时间是否小于预期结果   单位是ms\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// 判断响应的状态码是否是预期结果中的某一个，oneof其中之一\r",
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201,200,404,301]);\r",
+							"});\r",
+							"\r",
+							"//判断状态码的解释是否等于预期结果\r",
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"ok\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": " application/json, text/javascript, */*; q=0.01",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": " gzip, deflate, br",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Language",
+						"value": " zh-CN,zh;q=0.9",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Connection",
+						"value": " keep-alive",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Length",
+						"value": " 11",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": " application/x-www-form-urlencoded; charset=UTF-8",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{host}}/movie/index?title=前任&key={{key_1}}&smode=0",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"movie",
+						"index"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "前任"
+						},
+						{
+							"key": "key",
+							"value": "{{key_1}}"
+						},
+						{
+							"key": "smode",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "关键字影院检索",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"//\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"success\");\r",
+							"});\r",
+							"//\r",
+							"pm.test(\"Your test name\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.value).to.eql(100);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://v.juhe.cn/movie/cinemas.search?cityid=1&keyword=横店&page=1&key=cffd16813759acc49efb2930b552c655",
+					"protocol": "http",
+					"host": [
+						"v",
+						"juhe",
+						"cn"
+					],
+					"path": [
+						"movie",
+						"cinemas.search"
+					],
+					"query": [
+						{
+							"key": "cityid",
+							"value": "1"
+						},
+						{
+							"key": "keyword",
+							"value": "横店"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "key",
+							"value": "cffd16813759acc49efb2930b552c655"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
